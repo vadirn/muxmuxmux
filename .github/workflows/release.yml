@@ -7,13 +7,15 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
-permissions:
-  contents: write
-  pull-requests: write
-  id-token: write
+permissions: {}
 
 jobs:
   release:
+    if: github.repository == 'vadirn/muxmuxmux'
+    permissions:
+      contents: write
+      packages: write
+      pull-requests: write
     name: Release
     runs-on: ubuntu-latest
     steps:
@@ -44,9 +46,8 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: pnpm changeset publish
-          title: 'chore: version packages'
-          commit: 'chore: version packages'
+          publish: pnpm changeset:release
+          version: pnpm changeset:version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: true

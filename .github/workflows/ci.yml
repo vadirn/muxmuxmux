@@ -4,12 +4,10 @@ on:
   pull_request:
     branches:
       - main
-  push:
-    branches:
-      - main
 
 jobs:
   test:
+    if: github.repository == 'vadirn/muxmuxmux'
     name: Test & Build
     runs-on: ubuntu-latest
     steps:
