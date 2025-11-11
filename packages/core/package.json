@@ -1,0 +1,54 @@
+{
+	"name": "@muxmuxmux/core",
+	"version": "0.1.0",
+	"description": "Typesafe state-dependent behavior for modern apps",
+	"keywords": [
+		"state",
+		"typescript",
+		"observable",
+		"state-machine",
+		"framework-agnostic",
+		"state-controller"
+	],
+	"author": "Vadim Kotov",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/vadirn/muxmuxmux.git",
+		"directory": "packages/core"
+	},
+	"homepage": "https://github.com/vadirn/muxmuxmux#readme",
+	"bugs": {
+		"url": "https://github.com/vadirn/muxmuxmux/issues"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			}
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"build": "tsgo --project tsconfig.build.json",
+		"dev": "tsgo --project tsconfig.build.json --watch",
+		"typecheck": "tsgo --noEmit",
+		"test": "vitest",
+		"test:ui": "vitest --ui",
+		"size": "npm pack --dry-run",
+		"clean": "rm -rf dist *.tsbuildinfo"
+	},
+	"devDependencies": {
+		"@typescript/native-preview": "7.0.0-dev.20251109.1",
+		"vitest": "4.0.8"
+	}
+}
