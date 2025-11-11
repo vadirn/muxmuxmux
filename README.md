@@ -1,6 +1,6 @@
 ![muxmuxmux](./assets/muxmuxmux.svg)
 
-Typesafe state-dependent behavior for modern apps.
+Typesafe state machines with minimal boilerplate. For React, Svelte and more.
 
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/@muxmuxmux/core)](https://bundlephobia.com/package/@muxmuxmux/core)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE.md)
