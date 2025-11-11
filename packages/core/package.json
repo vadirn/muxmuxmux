@@ -1,6 +1,7 @@
 {
 	"name": "@muxmuxmux/core",
-	"version": "0.1.0",
+	"version": "0.1.1",
+	"type": "module",
 	"description": "Typesafe state-dependent behavior for modern apps",
 	"keywords": [
 		"state",
