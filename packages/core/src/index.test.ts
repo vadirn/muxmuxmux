@@ -135,11 +135,11 @@ describe("Type inference", () => {
 		ctrl.start();
 		ctrl.stop();
 
-		// Invalid operations should not compile
+		// Invalid operations should not compile (type-level only)
 		// @ts-expect-error - invalid state should not be assignable
 		ctrl.set("invalid");
 
 		// @ts-expect-error - method doesn't exist in any state
-		ctrl.nonExistent();
+		expect(() => ctrl.nonExistent()).toThrow();
 	});
 });
