@@ -28,5 +28,5 @@
 		"@changesets/cli": "2.29.7",
 		"typescript": "5.9.3"
 	},
-	"packageManager": "pnpm@10.20.0"
+	"packageManager": "pnpm@10.21.0"
 }
