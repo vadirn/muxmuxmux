@@ -1,0 +1,61 @@
+{
+	"name": "@muxmuxmux/react",
+	"version": "0.1.0",
+	"description": "React bindings for muxmuxmux",
+	"keywords": [
+		"react",
+		"hooks",
+		"state",
+		"muxmuxmux"
+	],
+	"author": "Vadim Kotov",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/vadirn/muxmuxmux.git",
+		"directory": "packages/react"
+	},
+	"homepage": "https://github.com/vadirn/muxmuxmux#readme",
+	"bugs": {
+		"url": "https://github.com/vadirn/muxmuxmux/issues"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			}
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"build": "tsgo --project tsconfig.build.json",
+		"dev": "tsgo --project tsconfig.build.json --watch",
+		"typecheck": "tsgo --noEmit",
+		"test": "vitest",
+		"test:ui": "vitest --ui",
+		"clean": "rm -rf dist *.tsbuildinfo"
+	},
+	"dependencies": {
+		"@muxmuxmux/core": "workspace:*"
+	},
+	"peerDependencies": {
+		"react": "^18.0.0 || ^19.0.0"
+	},
+	"devDependencies": {
+		"@testing-library/react": "^16.0.1",
+		"@types/react": "^18.3.16",
+		"@typescript/native-preview": "7.0.0-dev.20251109.1",
+		"jsdom": "^26.0.0",
+		"react": "^18.3.1",
+		"vitest": "4.0.8"
+	}
+}
