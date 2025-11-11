@@ -14,7 +14,7 @@ State machines are powerful but often verbose. muxmuxmux gives you the benefits 
 - **Intuitive API** - Call methods directly on the controller, they only run in the right state
 - **Lightweight** - Zero dependencies, tiny bundle size
 
-## Usage
+## Usage with plain JS
 
 ```typescript
 import { controller } from "@muxmuxmux/core";
@@ -41,6 +41,71 @@ button.subscribe((state) => updateButtonUI(state));
 
 // User clicks button
 button.onClick(); // idle → loading → idle/error
+```
+
+## Usage with React
+
+```tsx
+import { useController } from "@muxmuxmux/react";
+
+function Button() {
+	const handleClick = async () => {
+		button.set("loading");
+		try {
+			await submitForm();
+			button.set("idle");
+		} catch (error) {
+			button.set("error");
+		}
+	};
+
+	const button = useController("idle", {
+		idle: { onClick: handleClick },
+		loading: {},
+		error: { onClick: handleClick }, // Retry on error
+	});
+
+	const state = button.get();
+
+	return (
+		<button
+			onClick={button.onClick}
+			disabled={state === "loading"}
+		>
+			{state === "loading" ? "Loading..." : "Submit"}
+		</button>
+	);
+}
+```
+
+## Usage with Svelte
+
+Svelte works with `@muxmuxmux/core` directly. The controller implements Svelte's store interface.
+
+```svelte
+<script lang="ts">
+	import { controller } from "@muxmuxmux/core";
+
+	const handleSubmit = async () => {
+		button.set("loading");
+		try {
+			await submitForm();
+			button.set("idle");
+		} catch (error) {
+			button.set("error");
+		}
+	};
+
+	const button = controller("idle", {
+		idle: { onClick: handleSubmit },
+		loading: {},
+		error: { onClick: handleSubmit }, // Retry
+	});
+</script>
+
+<button on:click={button.onClick}>
+	{$button === "loading" ? "Loading..." : "Submit"}
+</button>
 ```
 
 ## How it works
@@ -71,7 +136,10 @@ ctrl.stop(); // Calls running.stop() when state is 'running'
 
 ## Packages
 
-- **[@muxmuxmux/core](./packages/core)** - Core library
+- **[@muxmuxmux/core](./packages/core)** - Core library (framework-agnostic)
+- **[@muxmuxmux/react](./packages/react)** - React bindings
+
+**Note:** Svelte works with `@muxmuxmux/core` directly via its native store interface.
 
 ## Contributing
 

@@ -87,7 +87,7 @@ describe("useController", () => {
 			const ctrl = useController("idle" as const, {
 				idle: {
 					onClick: async () => {
-						ctrl.set('loading');
+						ctrl.set("loading");
 						await promise;
 						ctrl.set("idle");
 					},
@@ -100,7 +100,11 @@ describe("useController", () => {
 			return (
 				<div>
 					<div data-testid="state">{state}</div>
-					<button type="button" onClick={ctrl.onClick} disabled={state === "loading"}>
+					<button
+						type="button"
+						onClick={ctrl.onClick}
+						disabled={state === "loading"}
+					>
 						Submit
 					</button>
 				</div>

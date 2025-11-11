@@ -20,11 +20,11 @@
 		"test": "pnpm -r run test",
 		"size": "pnpm -r run size",
 		"clean": "pnpm -r run clean && rm -rf node_modules",
-		"format": "biome check --write .",
+		"format": "biome format --write .",
 		"lint": "biome lint ."
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.3.4",
+		"@biomejs/biome": "2.3.5",
 		"@changesets/cli": "2.29.7",
 		"typescript": "5.9.3"
 	},

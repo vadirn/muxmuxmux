@@ -106,40 +106,63 @@ function App() {
 					How it works:
 				</h3>
 				<p className="mb-4 text-blue-900">
-					This demo showcases <strong>state-dependent method dispatching</strong> -
-					the core pattern of muxmuxmux. The same method name (<code className="bg-blue-100 px-1 rounded">onClick</code>)
-					has different implementations based on the current state.
+					This demo showcases{" "}
+					<strong>state-dependent method dispatching</strong> - the core pattern
+					of muxmuxmux. The same method name (
+					<code className="bg-blue-100 px-1 rounded">onClick</code>) has
+					different implementations based on the current state.
 				</p>
 				<ul className="m-0 pl-6 space-y-3">
 					<li>
 						<strong className="text-blue-900">Idle state:</strong>
-						<code className="ml-2 bg-blue-100 px-1 rounded">onClick → handleSubmit</code>
+						<code className="ml-2 bg-blue-100 px-1 rounded">
+							onClick → handleSubmit
+						</code>
 						<br />
-						<span className="text-sm">Clicking starts the async form submission</span>
+						<span className="text-sm">
+							Clicking starts the async form submission
+						</span>
 					</li>
 					<li>
 						<strong className="text-blue-900">Loading state:</strong>
-						<code className="ml-2 bg-blue-100 px-1 rounded">onClick → ignoreClick</code>
+						<code className="ml-2 bg-blue-100 px-1 rounded">
+							onClick → ignoreClick
+						</code>
 						<br />
-						<span className="text-sm">Clicks are ignored (no-op) to prevent re-submission</span>
+						<span className="text-sm">
+							Clicks are ignored (no-op) to prevent re-submission
+						</span>
 					</li>
 					<li>
 						<strong className="text-blue-900">Success state:</strong>
-						<code className="ml-2 bg-blue-100 px-1 rounded">onClick → ignoreClick</code>
+						<code className="ml-2 bg-blue-100 px-1 rounded">
+							onClick → ignoreClick
+						</code>
 						<br />
-						<span className="text-sm">Clicks ignored during success display, auto-resets to idle after 2s</span>
+						<span className="text-sm">
+							Clicks ignored during success display, auto-resets to idle after
+							2s
+						</span>
 					</li>
 					<li>
 						<strong className="text-blue-900">Error state:</strong>
-						<code className="ml-2 bg-blue-100 px-1 rounded">onClick → handleSubmit</code>
+						<code className="ml-2 bg-blue-100 px-1 rounded">
+							onClick → handleSubmit
+						</code>
 						<br />
-						<span className="text-sm">Clicking retries submission - same handler as idle state</span>
+						<span className="text-sm">
+							Clicking retries submission - same handler as idle state
+						</span>
 					</li>
 				</ul>
 				<p className="mt-4 text-sm text-blue-800">
-					<strong>Why this pattern?</strong> Instead of conditionals checking state
-					(<code className="bg-blue-100 px-1 rounded">if (state === "loading") return;</code>),
-					behavior changes automatically when state changes. Cleaner code, type-safe methods.
+					<strong>Why this pattern?</strong> Instead of conditionals checking
+					state (
+					<code className="bg-blue-100 px-1 rounded">
+						if (state === "loading") return;
+					</code>
+					), behavior changes automatically when state changes. Cleaner code,
+					type-safe methods.
 				</p>
 			</div>
 		</div>
