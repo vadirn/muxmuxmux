@@ -50,9 +50,11 @@ button.onClick(); // idle → loading → idle/error
 
 ```tsx
 import { useController } from "@muxmuxmux/react";
+import { useCallback } from "react";
 
 function Button() {
-	const handleClick = async () => {
+	// Expected stable identity to be used with useController
+	const handleClick = useCallback(async () => {
 		button.set("loading");
 		try {
 			await submitForm();
@@ -60,7 +62,7 @@ function Button() {
 		} catch (error) {
 			button.set("error");
 		}
-	};
+	}, []);
 
 	const button = useController("idle", {
 		idle: { onClick: handleClick },
