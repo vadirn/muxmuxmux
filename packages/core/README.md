@@ -65,7 +65,7 @@ Checking `get()` does not narrow method types. Narrow the call's result instead.
 
 - `set` ignores a state equal to the current one (`Object.is`), so subscribers don't fire.
 - `subscribe(listener)` calls the listener right away with the current state, then on every change. It returns an unsubscribe function.
-- Methods named `get`, `set` or `subscribe` are ignored, because the store owns those names.
+- Methods named `get`, `set` or `subscribe` fail to compile, because the store owns those names. In plain JavaScript they are ignored.
 
 ## Svelte
 

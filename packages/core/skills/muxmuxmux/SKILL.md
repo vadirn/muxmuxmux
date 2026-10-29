@@ -101,7 +101,7 @@ expect(inspectMethods(ctrl).idle.start).toHaveBeenCalled();
 
 ❌ Don't give one method incompatible parameters across states. Arguments must suit every state that defines the method, so `(x: number)` in one state and `(x: string)` in another makes the method uncallable.
 
-❌ Don't name a method `get`, `set` or `subscribe`. The store owns those names, so such methods are silently ignored.
+❌ Don't name a method `get`, `set` or `subscribe`. The store owns those names. TypeScript reports "reserved by the store; rename this method", and plain JavaScript silently ignores the method.
 
 ❌ Don't reach the controller through `this` inside a method. Refer to the controller's variable, as in `upload.set("idle")`.
 

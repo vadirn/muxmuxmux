@@ -190,4 +190,13 @@ describe("Type inference", () => {
 
 		expectTypeOf(inspectMethods(ctrl).idle.start).toEqualTypeOf<() => number>();
 	});
+
+	it("should reject methods named like store methods", () => {
+		const methods = { idle: { get: () => "mine" }, busy: {} };
+		// @ts-expect-error the store owns `get`, so no method can take that name
+		const ctrl = controller("idle", methods);
+
+		// At runtime the store's get still wins
+		expect(ctrl.get()).toBe("idle");
+	});
 });

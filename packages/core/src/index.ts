@@ -83,7 +83,8 @@ export function inspectMethods<C>(
  * A method's return type is the union of its return types across states, plus `undefined`
  * when some state lacks the method. Its arguments must suit every state that defines it.
  *
- * Methods named `get`, `set` or `subscribe` are ignored, because the store owns those names.
+ * Methods named `get`, `set` or `subscribe` fail to compile, because the store owns those names.
+ * Plain JavaScript callers get no error; such methods are ignored at runtime.
  *
  * @param defaultState - Starting state
  * @param methods - Object mapping states to their available methods
@@ -117,11 +118,19 @@ export function controller<M extends Methods>(
 	return attachDispatchers(s, methods);
 }
 
-/** Keys the store owns, so no dispatcher can take them */
+/** Keys the store owns, so no method or dispatcher can take them */
 type StoreKeys = keyof Store<unknown>;
 
 /** Each state's methods: state name → method name → function */
-export type Methods = Record<string, Record<string, AnyFn>>;
+export type Methods = Record<string, StateMethods>;
+
+/**
+ * One state's methods. A store key gets a message as its type,
+ * so a method with that name fails to compile and shows the message.
+ */
+type StateMethods = Record<string, AnyFn> & {
+	[K in StoreKeys]?: "reserved by the store; rename this method";
+};
 
 /**
  * An observable value. `set` skips a value equal to the current one (`Object.is`).
