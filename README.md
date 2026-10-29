@@ -12,7 +12,7 @@ Typesafe state machines with minimal boilerplate. For React, Svelte and more.
 
 State machines are powerful but often verbose. muxmuxmux gives you the benefits of state-dependent behavior with minimal boilerplate:
 
-- **Type-safe** - Full TypeScript inference for states and methods
+- **Type-safe** - Full TypeScript inference for states, methods, and their return values
 - **Observable** - Standard `get()`/`set()`/`subscribe()` interface
 - **Intuitive API** - Call methods directly on the controller, they only run in the right state
 - **Lightweight** - Zero dependencies, tiny bundle size
@@ -138,6 +138,22 @@ ctrl.start(); // Calls idle.start() when state is 'idle'
 ctrl.stop(); // Calls running.stop() when state is 'running'
 // No-op if method doesn't exist in current state
 ```
+
+### Return values
+
+A method returns whatever the current state's version returns. Its type is the union across states. A state without the method adds `undefined`, because the call is a no-op there.
+
+```typescript
+const counter = controller("idle", {
+	idle: { read: () => 0, reset: () => true },
+	busy: { read: () => "busy" },
+});
+
+counter.read(); // number | string
+counter.reset(); // boolean | undefined
+```
+
+Arguments must suit every state that defines the method, because the state can change before the call.
 
 ## Packages
 

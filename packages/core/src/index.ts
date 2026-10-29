@@ -90,7 +90,10 @@ function merge<Target extends object, Objects extends object[]>(
  * Creates a controller - an observable that runs different methods based on the current state.
  *
  * When you call a method, it runs the version defined for the current state. If that state
- * doesn't have that method, it's a no-op.
+ * doesn't have that method, it's a no-op that returns `undefined`.
+ *
+ * A method's return type is the union of its return types across states, plus `undefined`
+ * when some state lacks the method. Its arguments must suit every state that defines it.
  *
  * @param defaultState - Starting state
  * @param methods - Object mapping states to their available methods
@@ -106,6 +109,15 @@ function merge<Target extends object, Objects extends object[]>(
  * ctrl.start();  // works - changes to "running"
  * ctrl.start();  // no-op - "running" doesn't have start
  * ctrl.stop();   // works - changes back to "idle"
+ *
+ * @example
+ * const counter = controller("idle", {
+ *   idle: { read: () => 0, reset: () => true },
+ *   busy: { read: () => "busy" },
+ * });
+ *
+ * counter.read();  // number | string
+ * counter.reset(); // boolean | undefined - "busy" doesn't have reset
  */
 export function controller<M extends Methods>(
 	defaultState: keyof M,
@@ -117,8 +129,6 @@ export function controller<M extends Methods>(
 
 type ReservedKeys = "get" | "set" | "subscribe";
 
-declare const __methods: unique symbol;
-
 export type Methods = Record<string, Record<string, AnyFn>>;
 
 /** Store interface for observable state */
@@ -128,25 +138,30 @@ export type Store<T> = {
 	subscribe: (listener: (value: T) => void) => () => void;
 };
 
-/** Inferred methods from state methods object - dispatchers created from union intersection */
-type DispatchMethods<M extends Methods> = UnionToIntersection<M[keyof M]>;
+/** Every method name declared in any state */
+type MethodKeys<M extends Methods> = Exclude<
+	{ [S in keyof M]: keyof M[S] }[keyof M],
+	ReservedKeys
+>;
+
+/**
+ * Union of each state's version of method K, `() => undefined` where a state lacks it.
+ * Calling the union intersects the arguments and unions the return types.
+ */
+type Dispatcher<M extends Methods, K> = {
+	[S in keyof M]: K extends keyof M[S] ? M[S][K] : () => undefined;
+}[keyof M];
 
 /** Controller with store methods and dynamic method dispatchers */
-export type Controller<M extends Methods> = Store<keyof M> &
-	Omit<DispatchMethods<M>, ReservedKeys> & {
-		readonly [__methods]?: M;
-	};
+export type Controller<M extends Methods> = Store<keyof M> & {
+	[K in MethodKeys<M>]: Dispatcher<M, K>;
+} & {
+	/** Type-only marker that lets `inspectMethods` infer `M`; always undefined at runtime */
+	readonly __methods?: M;
+};
 
 // biome-ignore lint/suspicious/noExplicitAny: flexible function signature
 type AnyFn = (...args: any[]) => void;
-
-/** Converts union of function types to intersection */
-// biome-ignore lint/suspicious/noExplicitAny: distributive conditional type
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-	k: infer I extends U,
-) => void
-	? I
-	: never;
 
 /** Recursively merges array of objects */
 type MergeArrayOfObjects<
