@@ -123,12 +123,7 @@ describe("Type inference", () => {
 			running: { stop: () => {} },
 		});
 
-		const currentState = ctrl.get();
-		// If this compiles, types are working correctly
-		type StateType = typeof currentState;
-		type Expected = "idle" | "running";
-		// @ts-expect-error - this line is for type checking only
-		const _test: StateType extends Expected ? true : false = true;
+		expectTypeOf(ctrl.get()).toEqualTypeOf<"idle" | "running">();
 
 		// Valid operations should compile
 		ctrl.set("running");
