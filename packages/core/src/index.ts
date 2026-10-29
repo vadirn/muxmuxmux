@@ -144,14 +144,19 @@ type MethodKeys<M extends Methods> = Exclude<
 	ReservedKeys
 >;
 
+/**
+ * Union of each state's version of method K, `() => undefined` where a state lacks it.
+ * Calling the union intersects the arguments and unions the return types.
+ */
+type Dispatcher<M extends Methods, K> = Expand<
+	{
+		[S in keyof M]: K extends keyof M[S] ? M[S][K] : () => undefined;
+	}[keyof M]
+>;
+
 /** Controller with store methods and dynamic method dispatchers */
 export type Controller<M extends Methods> = Store<keyof M> & {
-	// Union of each state's version of method K, `() => undefined` where a state lacks it.
-	// Calling the union intersects the arguments and unions the return types.
-	// Kept inline: a named alias would show up in editor hovers instead of the union.
-	[K in MethodKeys<M>]: {
-		[S in keyof M]: K extends keyof M[S] ? M[S][K] : () => undefined;
-	}[keyof M];
+	[K in MethodKeys<M>]: Dispatcher<M, K>;
 } & {
 	/** Type-only marker that lets `inspectMethods` infer `M`; always undefined at runtime */
 	readonly __methods?: M;
@@ -175,3 +180,10 @@ type Merge<T1, T2> = Omit<T1, keyof T2> & T2;
 type Prettify<T> = {
 	[K in keyof T]: T[K];
 } & {};
+
+/**
+ * Shows the computed type in IntelliSense instead of the alias name.
+ * `infer` copies T into O, which makes TypeScript evaluate it.
+ * Unlike Prettify, it keeps call signatures, so it works on function types.
+ */
+type Expand<T> = T extends infer O ? O : never;
