@@ -50,11 +50,15 @@ function Button() {
 Hook that creates a controller and subscribes to its state changes.
 
 **Parameters:**
-- `defaultState` - The initial state
-- `methods` - State-dependent methods object
+- `defaultState` - The initial state, read on the first render only
+- `methods` - State-dependent methods object, re-read on every render
 
 **Returns:**
-- The controller instance with reactive state
+- The controller instance with reactive state. It keeps the same identity across renders.
+
+Each method call runs the handler from the latest committed render. So handlers can read props and state without `useCallback`.
+
+Method names come from the first render. A name that first appears on a later render gets no dispatcher.
 
 ## License
 
