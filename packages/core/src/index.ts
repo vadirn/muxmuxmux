@@ -144,17 +144,14 @@ type MethodKeys<M extends Methods> = Exclude<
 	ReservedKeys
 >;
 
-/**
- * Union of each state's version of method K, `() => undefined` where a state lacks it.
- * Calling the union intersects the arguments and unions the return types.
- */
-type Dispatcher<M extends Methods, K> = {
-	[S in keyof M]: K extends keyof M[S] ? M[S][K] : () => undefined;
-}[keyof M];
-
 /** Controller with store methods and dynamic method dispatchers */
 export type Controller<M extends Methods> = Store<keyof M> & {
-	[K in MethodKeys<M>]: Dispatcher<M, K>;
+	// Union of each state's version of method K, `() => undefined` where a state lacks it.
+	// Calling the union intersects the arguments and unions the return types.
+	// Kept inline: a named alias would show up in editor hovers instead of the union.
+	[K in MethodKeys<M>]: {
+		[S in keyof M]: K extends keyof M[S] ? M[S][K] : () => undefined;
+	}[keyof M];
 } & {
 	/** Type-only marker that lets `inspectMethods` infer `M`; always undefined at runtime */
 	readonly __methods?: M;
