@@ -1,4 +1,4 @@
-/** Stores the methods object for each controller so we can retrieve it later */
+/** Each controller's methods, kept for `inspectMethods` */
 // biome-ignore lint/suspicious/noExplicitAny: needed for generic controllers
 const controllerMethods = new WeakMap<any, Methods>();
 
@@ -36,7 +36,7 @@ function attachDispatchers<M extends Methods>(
 	store: Store<keyof M>,
 	methods: M,
 ): Controller<M> {
-	// biome-ignore lint/suspicious/noExplicitAny: avoids return type mismatch
+	// biome-ignore lint/suspicious/noExplicitAny: filled key by key, so only the return type can describe it
 	const dispatchers: any = {};
 
 	for (const [_stateKey, stateMethods] of Object.entries(methods)) {
@@ -83,9 +83,11 @@ export function inspectMethods<C>(
  * A method's return type is the union of its return types across states, plus `undefined`
  * when some state lacks the method. Its arguments must suit every state that defines it.
  *
+ * Methods named `get`, `set` or `subscribe` are ignored, because the store owns those names.
+ *
  * @param defaultState - Starting state
  * @param methods - Object mapping states to their available methods
- * @returns Observable with all possible methods attached
+ * @returns Observable with a method for every name any state declares
  *
  * @example
  * const ctrl = controller("idle", {
@@ -118,9 +120,13 @@ export function controller<M extends Methods>(
 /** Keys the store owns, so no dispatcher can take them */
 type StoreKeys = keyof Store<unknown>;
 
+/** Each state's methods: state name → method name → function */
 export type Methods = Record<string, Record<string, AnyFn>>;
 
-/** Store interface for observable state */
+/**
+ * An observable value. `set` skips a value equal to the current one (`Object.is`).
+ * `subscribe` calls the listener right away, then on every change, and returns an unsubscribe function.
+ */
 export type Store<T> = {
 	get: () => T;
 	set: (value: T) => void;
@@ -155,7 +161,7 @@ export type Controller<M extends Methods> = Store<keyof M> & {
 type AnyFn = (...args: any[]) => void;
 
 /**
- * Merges an intersection into one object type, so IntelliSense lists every key.
+ * Merges an intersection into one object type, so editor hovers list every key.
  * It drops call signatures, so apply it to object types only.
  */
 type FlattenIntersection<T> = {
@@ -163,7 +169,7 @@ type FlattenIntersection<T> = {
 } & {};
 
 /**
- * Shows the computed type in IntelliSense instead of the alias name.
+ * Makes editor hovers show the computed type instead of the alias name.
  * `infer` copies T into O, which makes TypeScript evaluate it.
  * Unlike FlattenIntersection, it keeps call signatures, so it works on function types.
  */

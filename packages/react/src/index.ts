@@ -4,9 +4,12 @@ import { useMemo, useSyncExternalStore } from "react";
 /**
  * Hook that creates a controller and subscribes to its state changes.
  *
+ * It creates the controller on the first render and keeps it.
+ * Later `defaultState` and `methods` arguments are ignored.
+ *
  * @param defaultState - The initial state
  * @param methods - State-dependent methods
- * @returns The controller instance with reactive state
+ * @returns The controller; the component re-renders on each state change
  *
  * @example
  * ```tsx
