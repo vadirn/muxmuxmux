@@ -1,4 +1,4 @@
-/** Each controller's methods, kept for `inspectMethods` */
+// Each controller's methods, kept for `inspectMethods`
 // biome-ignore lint/suspicious/noExplicitAny: needed for generic controllers
 const controllerMethods = new WeakMap<any, Methods>();
 
