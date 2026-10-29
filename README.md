@@ -108,7 +108,7 @@ Svelte works with `@muxmuxmux/core` directly. The controller implements Svelte's
 	});
 </script>
 
-<button on:click={button.onClick}>
+<button onclick={button.onClick}>
 	{$button === "loading" ? "Loading..." : "Submit"}
 </button>
 ```
