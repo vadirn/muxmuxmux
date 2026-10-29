@@ -29,31 +29,30 @@ function store<T>(initialValue: T): Store<T> {
 }
 
 /**
- * Adds all the methods to a store so they dispatch based on the current state
+ * Adds a dispatcher for each method name, which calls the current state's version
  * @internal
  */
-function attachMethods<M extends Methods>(
+function attachDispatchers<M extends Methods>(
 	store: Store<keyof M>,
 	methods: M,
 ): Controller<M> {
 	// biome-ignore lint/suspicious/noExplicitAny: avoids return type mismatch
-	const dispatchMethods: any = {};
+	const dispatchers: any = {};
 
-	for (const [_stateKey, handlers] of Object.entries(methods)) {
-		for (const methodKey of Object.keys(handlers)) {
-			if (methodKey in dispatchMethods || methodKey in store) {
+	for (const [_stateKey, stateMethods] of Object.entries(methods)) {
+		for (const methodKey of Object.keys(stateMethods)) {
+			if (methodKey in dispatchers || methodKey in store) {
 				continue;
 			}
 
-			dispatchMethods[methodKey] = (...args: unknown[]) => {
+			dispatchers[methodKey] = (...args: unknown[]) => {
 				const currentState = store.get();
-				const availableMethods = methods[currentState];
-				return availableMethods?.[methodKey]?.(...args);
+				return methods[currentState]?.[methodKey]?.(...args);
 			};
 		}
 	}
 
-	const controller = merge(store, dispatchMethods);
+	const controller = Object.assign(store, dispatchers);
 	controllerMethods.set(controller, methods);
 	return controller;
 }
@@ -73,17 +72,6 @@ export function inspectMethods<C>(
 ): C extends Controller<infer M> ? M : never {
 	// biome-ignore lint/suspicious/noExplicitAny: conditional type assertion
 	return controllerMethods.get(controller) as any;
-}
-
-/**
- * Shallow merges objects using Object.assign
- * @internal
- */
-function merge<Target extends object, Objects extends object[]>(
-	target: Target,
-	...objects: Objects
-): MergeArrayOfObjects<Target, Objects> {
-	return Object.assign(target, ...objects);
 }
 
 /**
@@ -122,12 +110,13 @@ function merge<Target extends object, Objects extends object[]>(
 export function controller<M extends Methods>(
 	defaultState: keyof M,
 	methods: M,
-): Prettify<Controller<M>> {
+): FlattenIntersection<Controller<M>> {
 	const s = store(defaultState);
-	return attachMethods(s, methods);
+	return attachDispatchers(s, methods);
 }
 
-type ReservedKeys = "get" | "set" | "subscribe";
+/** Keys the store owns, so no dispatcher can take them */
+type StoreKeys = keyof Store<unknown>;
 
 export type Methods = Record<string, Record<string, AnyFn>>;
 
@@ -138,25 +127,25 @@ export type Store<T> = {
 	subscribe: (listener: (value: T) => void) => () => void;
 };
 
-/** Every method name declared in any state */
-type MethodKeys<M extends Methods> = Exclude<
+/** Method names that get a dispatcher: every name any state declares, except store keys */
+type DispatcherKeys<M extends Methods> = Exclude<
 	{ [S in keyof M]: keyof M[S] }[keyof M],
-	ReservedKeys
+	StoreKeys
 >;
 
 /**
  * Union of each state's version of method K, `() => undefined` where a state lacks it.
  * Calling the union intersects the arguments and unions the return types.
  */
-type Dispatcher<M extends Methods, K> = Expand<
+type Dispatcher<M extends Methods, K> = Unalias<
 	{
 		[S in keyof M]: K extends keyof M[S] ? M[S][K] : () => undefined;
 	}[keyof M]
 >;
 
-/** Controller with store methods and dynamic method dispatchers */
+/** Store plus one dispatcher per method name */
 export type Controller<M extends Methods> = Store<keyof M> & {
-	[K in MethodKeys<M>]: Dispatcher<M, K>;
+	[K in DispatcherKeys<M>]: Dispatcher<M, K>;
 } & {
 	/** Type-only marker that lets `inspectMethods` infer `M`; always undefined at runtime */
 	readonly __methods?: M;
@@ -165,25 +154,17 @@ export type Controller<M extends Methods> = Store<keyof M> & {
 // biome-ignore lint/suspicious/noExplicitAny: flexible function signature
 type AnyFn = (...args: any[]) => void;
 
-/** Recursively merges array of objects */
-type MergeArrayOfObjects<
-	T1 extends object,
-	Objects extends object[],
-> = Objects extends [infer T2 extends object, ...infer Rest extends object[]]
-	? MergeArrayOfObjects<Merge<T1, T2>, Rest>
-	: T1;
-
-/** Merges two object types with right taking precedence */
-type Merge<T1, T2> = Omit<T1, keyof T2> & T2;
-
-/** Pretty-prints a type for better IntelliSense display */
-type Prettify<T> = {
+/**
+ * Merges an intersection into one object type, so IntelliSense lists every key.
+ * It drops call signatures, so apply it to object types only.
+ */
+type FlattenIntersection<T> = {
 	[K in keyof T]: T[K];
 } & {};
 
 /**
  * Shows the computed type in IntelliSense instead of the alias name.
  * `infer` copies T into O, which makes TypeScript evaluate it.
- * Unlike Prettify, it keeps call signatures, so it works on function types.
+ * Unlike FlattenIntersection, it keeps call signatures, so it works on function types.
  */
-type Expand<T> = T extends infer O ? O : never;
+type Unalias<T> = T extends infer O ? O : never;
