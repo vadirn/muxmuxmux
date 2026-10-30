@@ -10,9 +10,9 @@ description: >
 metadata:
   type: core
   library: muxmuxmux
-  sources:
-    - "vadirn/muxmuxmux:packages/core/src/index.ts"
-    - "vadirn/muxmuxmux:packages/core/README.md"
+sources:
+  - "vadirn/muxmuxmux:packages/core/src/index.ts"
+  - "vadirn/muxmuxmux:packages/core/README.md"
 ---
 
 # muxmuxmux
