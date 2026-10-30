@@ -3,3 +3,5 @@
 1. ...
 
 ## 👏 Accompanying gif
+
+<!-- For memes. Drop a celebratory/relevant GIF here. -->
