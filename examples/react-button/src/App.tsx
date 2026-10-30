@@ -1,6 +1,5 @@
 import { useController } from "@muxmuxmux/react";
 import { cva } from "class-variance-authority";
-import { useCallback } from "react";
 
 // Button style variants
 const buttonVariants = cva(
@@ -32,9 +31,8 @@ const ignoreClick = () => {
 };
 
 function App() {
-	// Memoized submit handler - reused in idle and error states
-	// biome-ignore lint/correctness/useExhaustiveDependencies: expected stable identity
-	const handleSubmit = useCallback(async () => {
+	// Submit handler - reused in idle and error states
+	const handleSubmit = async () => {
 		button.set("loading");
 		console.log("state", button.get());
 		try {
@@ -50,7 +48,7 @@ function App() {
 			button.set("error");
 			console.log("state", button.get());
 		}
-	}, []);
+	};
 
 	// Controller created inside component with useController hook
 	const button = useController("idle" as const, {

@@ -80,6 +80,43 @@ describe("useController", () => {
 		expect(stopFn).toHaveBeenCalled();
 	});
 
+	it("should call handlers from the latest render", () => {
+		const controllers = new Set<{ read: () => string }>();
+
+		function TestComponent({ value }: { value: string }) {
+			const ctrl = useController("idle" as const, {
+				idle: { read: () => value },
+			});
+			controllers.add(ctrl);
+			return null;
+		}
+
+		const { rerender } = render(<TestComponent value="first" />);
+		rerender(<TestComponent value="second" />);
+
+		// Same controller across renders, but it runs the second render's handler
+		expect(controllers.size).toBe(1);
+		const [ctrl] = controllers;
+		expect(ctrl?.read()).toBe("second");
+	});
+
+	it("should not add methods that first appear on a later render", () => {
+		let ctrl: object | undefined;
+
+		function TestComponent({ extra }: { extra: boolean }) {
+			ctrl = useController("idle" as const, {
+				idle: extra ? { start: () => {}, stop: () => {} } : { start: () => {} },
+			});
+			return null;
+		}
+
+		const { rerender } = render(<TestComponent extra={false} />);
+		rerender(<TestComponent extra={true} />);
+
+		expect(ctrl).toHaveProperty("start");
+		expect(ctrl).not.toHaveProperty("stop");
+	});
+
 	it("should handle async state transitions", async () => {
 		const { resolve, promise } = Promise.withResolvers();
 

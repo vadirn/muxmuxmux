@@ -50,11 +50,9 @@ button.onClick(); // idle → loading → idle/error
 
 ```tsx
 import { useController } from "@muxmuxmux/react";
-import { useCallback } from "react";
 
 function Button() {
-	// Expected stable identity to be used with useController
-	const handleClick = useCallback(async () => {
+	const handleClick = async () => {
 		button.set("loading");
 		try {
 			await submitForm();
@@ -62,7 +60,7 @@ function Button() {
 		} catch (error) {
 			button.set("error");
 		}
-	}, []);
+	};
 
 	const button = useController("idle", {
 		idle: { onClick: handleClick },
@@ -82,6 +80,8 @@ function Button() {
 	);
 }
 ```
+
+The controller keeps the same identity across renders. Each method call runs the handler from the latest render. So handlers can read props and state without `useCallback`.
 
 ## Usage with Svelte
 
