@@ -44,7 +44,7 @@
 	"scripts": {
 		"build": "tsgo --project tsconfig.build.json",
 		"dev": "tsgo --project tsconfig.build.json --watch",
-		"typecheck": "tsgo --noEmit",
+		"typecheck": "tsgo --noEmit && tsgo --project fixtures/declaration-emit",
 		"test": "vitest",
 		"test:ui": "vitest --ui",
 		"size": "npm pack --dry-run",
