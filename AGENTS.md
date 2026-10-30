@@ -19,7 +19,7 @@ Run these from the repo root:
 
 - `pnpm lint`: biome lint.
 - `pnpm format`: biome format, writes files.
-- `pnpm build`: `tsgo` builds `packages/*/dist`.
+- `pnpm build`: `tsc` builds `packages/*/dist`.
 - `pnpm typecheck`: builds, then typechecks every package and example.
 - `pnpm test run`: vitest, one pass. Plain `pnpm test` watches in a terminal.
 
@@ -27,7 +27,7 @@ Before you finish, run `pnpm format`, `pnpm lint`, `pnpm typecheck`, and `pnpm t
 
 ## What `pnpm typecheck` covers
 
-- `packages/*`: `tsgo --noEmit` over `src`, tests included.
+- `packages/*`: `tsc --noEmit` over `src`, tests included.
 - `packages/core/fixtures/declaration-emit`: exports a controller and emits its declarations. TS4023 there means consumers cannot export controllers.
 - `examples/react-button`: `tsc --noEmit`.
 - `examples/svelte-button`: `svelte-kit sync && svelte-check`.

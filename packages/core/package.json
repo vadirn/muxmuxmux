@@ -42,16 +42,17 @@
 		"access": "public"
 	},
 	"scripts": {
-		"build": "tsgo --project tsconfig.build.json",
-		"dev": "tsgo --project tsconfig.build.json --watch",
-		"typecheck": "tsgo --noEmit && tsgo --project fixtures/declaration-emit",
+		"build": "tsc --project tsconfig.build.json",
+		"dev": "tsc --project tsconfig.build.json --watch",
+		"typecheck": "tsc --noEmit && tsc --project fixtures/declaration-emit",
 		"test": "vitest",
 		"test:ui": "vitest --ui",
 		"size": "npm pack --dry-run",
 		"clean": "rm -rf dist *.tsbuildinfo"
 	},
 	"devDependencies": {
-		"@typescript/native-preview": "7.0.0-dev.20251109.1",
-		"vitest": "4.0.8"
+		"happy-dom": "21.0.4",
+		"typescript": "7.0.2",
+		"vitest": "5.0.5"
 	}
 }
