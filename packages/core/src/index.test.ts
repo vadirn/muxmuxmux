@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { controller, inspectMethods } from "./index";
 
 describe("controller", () => {
@@ -123,12 +123,7 @@ describe("Type inference", () => {
 			running: { stop: () => {} },
 		});
 
-		const currentState = ctrl.get();
-		// If this compiles, types are working correctly
-		type StateType = typeof currentState;
-		type Expected = "idle" | "running";
-		// @ts-expect-error - this line is for type checking only
-		const _test: StateType extends Expected ? true : false = true;
+		expectTypeOf(ctrl.get()).toEqualTypeOf<"idle" | "running">();
 
 		// Valid operations should compile
 		ctrl.set("running");
@@ -141,5 +136,67 @@ describe("Type inference", () => {
 
 		// @ts-expect-error - method doesn't exist in any state
 		expect(() => ctrl.nonExistent()).toThrow();
+	});
+
+	it("should type a method result as the union across states", () => {
+		const ctrl = controller("idle", {
+			idle: {
+				start: () => 1,
+				fetch: (id: number) => Promise.resolve(String(id)),
+			},
+			running: { start: () => "s", stop: () => true },
+		});
+
+		const started = ctrl.start();
+		expectTypeOf(started).toEqualTypeOf<number | string>();
+		expect(started).toBe(1);
+
+		// A state without the method contributes undefined
+		const stopped = ctrl.stop();
+		expectTypeOf(stopped).toEqualTypeOf<boolean | undefined>();
+		expect(stopped).toBeUndefined();
+
+		expectTypeOf(ctrl.fetch(1)).toEqualTypeOf<Promise<string> | undefined>();
+
+		ctrl.set("running");
+		expect(ctrl.start()).toBe("s");
+		expect(ctrl.fetch(1)).toBeUndefined();
+	});
+
+	it("should not add undefined when every state defines the method", () => {
+		const light = controller("red", {
+			red: { label: () => "Stop" },
+			green: { label: () => "Go" },
+		});
+
+		expectTypeOf(light.label()).toEqualTypeOf<string>();
+	});
+
+	it("should require arguments that every state accepts", () => {
+		const ctrl = controller("a", {
+			a: { go: (x: number) => x },
+			b: { go: (x: string) => x.length },
+		});
+
+		// @ts-expect-error - "a" needs a number, "b" needs a string
+		ctrl.go(1);
+	});
+
+	it("should infer the methods object through inspectMethods", () => {
+		const ctrl = controller("idle", {
+			idle: { start: () => 1 },
+			running: { stop: () => true },
+		});
+
+		expectTypeOf(inspectMethods(ctrl).idle.start).toEqualTypeOf<() => number>();
+	});
+
+	it("should reject methods named like store methods", () => {
+		const methods = { idle: { get: () => "mine" }, busy: {} };
+		// @ts-expect-error the store owns `get`, so no method can take that name
+		const ctrl = controller("idle", methods);
+
+		// At runtime the store's get still wins
+		expect(ctrl.get()).toBe("idle");
 	});
 });

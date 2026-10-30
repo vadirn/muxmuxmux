@@ -6,3 +6,4 @@ dist/
 coverage/
 .svelte-kit/
 build/
+.direnv/
