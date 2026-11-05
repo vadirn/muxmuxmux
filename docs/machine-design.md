@@ -1,6 +1,6 @@
 # @muxmuxmux/machine: design, iteration 4
 
-A separate package beside `@muxmuxmux/core`. Iteration 4 folds in the probe of the four open questions. The package lives in [packages/machine](../packages/machine/README.md). The throwaway prototype behind the decisions below, with its mutants and rejected API shapes, is archived outside the repo. The package's tests now carry the lifecycle evidence.
+A separate package beside `@muxmuxmux/core`. Iteration 4 folds in the probe of the four open questions. The package lives in [packages/machine](../packages/machine/README.md). A throwaway prototype tested the decisions below, including mutants and rejected API shapes. It was discarded after it answered its questions, and the evidence column records its results. The package's tests now carry the lifecycle evidence.
 
 ## API
 
