@@ -95,7 +95,8 @@ machine("idle", states, {
 The machine is a readable store, so `$upload` works in a component with no adapter. Mounting subscribes and starts it, and unmounting aborts the current visit.
 
 - Read the state with `upload.get()`, not `get(upload)` from `svelte/store`. That helper subscribes and unsubscribes at once, so it runs `enter` and aborts it.
-- Server render subscribes for the length of the render. So the initial state's `enter` runs on the server.
+- Server render subscribes only while the component renders. So the initial state's `enter` runs on the server until its first `await`, and the end of the render aborts the visit. Moves made before that `await` show in the server HTML.
+- So in a server-rendered component, keep the initial state inert: give it no `enter`, and start work from an event or `onMount`. Otherwise, keep browser-only code after an `await`, and tie every request and timer to `visit.signal`.
 
 ## React
 

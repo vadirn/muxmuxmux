@@ -119,7 +119,8 @@ The machine works in Svelte with no adapter, like a core controller. On Svelte 5
 - The machine is a readable store. Unlike a core controller, it has no `set`, so `$m = …` fails. Moves go through visits.
 - `get(m)` from `svelte/store` subscribes and unsubscribes at once, so it runs `enter` and aborts it. Call `m.get()` instead.
 - `fromStore(m).current` does the same on every read outside an effect.
-- Server render subscribes for the length of the render. So the initial state's `enter` runs on the server and aborts when the render ends. React's server render reads `m.get` and never subscribes.
+- Server render subscribes only while the component renders: the compiler places `unsubscribe_stores` at the end of the render. So the initial state's `enter` runs on the server until its first `await`, and the end of the render aborts the visit. Moves made before that `await` show in the server HTML. React's server render reads `m.get` and never subscribes.
+- The rule for server-rendered components: keep the initial state inert, or keep browser-only code after an `await` and tie every request and timer to `visit.signal`. The runtime does not detect the server, because that needs `typeof window` sniffing or a dependency.
 
 ### Waiting
 
@@ -192,7 +193,7 @@ export function useMachine(initial, states, graph) {
 
 - `startOnSubscribe(m)` is private to `@muxmuxmux/machine`. It lives in the internal `src/machine.ts`, which both entries import, and the `exports` map publishes only `.` and `./react`. It fixes the start mode before anything uses the machine, so `machine` keeps one signature.
 - The subpath must import the module the root entry uses, not bundle its own copy. `once` and `when` find a machine's internals in a module-level `WeakMap`, so a second copy would break them for hook-made machines.
-- Without the start-on-subscribe option, on React 18, a getter method called during render starts both StrictMode machines, and the discarded one leaks a running visit.
+- Without the start-on-subscribe option, on React 18, a getter method called during render runs `enter` inside render, and one visit stays running after unmount.
 - The option matters on React 19 too. Without it, a render-time getter starts the kept machine during render, so `enter` runs inside render. Keep it after React 18 support ends. The subpath accepts `react` `^18.0.0 || ^19.0.0`, the same range as `@muxmuxmux/react`.
 - Methods read the latest render's props. A running async `enter` keeps the props from when it entered. To read fresh props inside `enter`, call a sibling method such as `m.url()`.
 - StrictMode on React 18.3.1: each render pass builds its own machine. The discarded one never enters, and the kept one enters twice with the first visit aborted.
@@ -205,21 +206,18 @@ export function useMachine(initial, states, graph) {
 | Visit-first methods                                     | Shapes where the visit refers to the methods object collapse targets to `never` |
 | Graph optional                                          | Without a graph, `visit.to("idel")` still fails to compile, and stale results stay safe |
 | Svelte lifecycle                                        | Six call sequences; five mutants each fail one |
+| Svelte server render: a rule, not a server check        | Svelte 5.57.3's server render of a probe page ran the initial `enter`, showed its synchronous move in the HTML, and aborted the visit before the code after its `await` ran |
 | Dead visit after stop                                   | A restart mutant fails the lifecycle and React tests; under restart, an orphaned child moves |
 | Method lookup before start                              | A start-first mutant fails the lifecycle test, and on React 18 the React test too |
 | Synchronous stop                                        | A deferred-stop mutant fails four test files |
 | Public `void` for returned visits                       | Removing it fails three type assertions |
 | Internal start-on-subscribe                             | React guard table: 2 enters and 0 leaks, and the first render reads the getter. Without it, React 18 leaks one visit and React 19 leaks none. In the package, `react.test.tsx` checks that no `enter` runs during render, and removing `startOnSubscribe` fails it on React 19 |
+| React 18 stays in the peer range                        | On React 18.3.1 with its types, the package's tests and `@muxmuxmux/react`'s pass unchanged, and both typecheck. Without `startOnSubscribe`, React 18 runs `enter` during render and leaves one visit running after unmount |
 | `hold`                                                  | Three cases: nested child, history child, keeping a child alive while waiting on it |
 | `useMachine` in the `./react` subpath                   | Reasoning, not a test: the start-on-subscribe option stays private to one package, and users without React pay nothing. Cost: `@muxmuxmux/react` stops being the only React binding |
 | Full guide in the machine's skill, quick test in core's | Reasoning, not a test: the full guide lives once, and core's skill keeps only what an agent with core alone needs to find the machine |
 
 The package's `index.test.ts` catches the same three lifecycle mutants as the prototype. A restart on a stopped call fails 3 tests, start-first fails 2, and a deferred stop fails 4. Making `enter` errors silent fails 2.
-
-## Open
-
-1. The React 18 results come from the first run on 18.3.1. The harness loads one React, now 19.3.1, so rechecking React 18 needs a separate install.
-2. Svelte server render runs the initial state's `enter`. Either document a rule, such as an inert initial state for server-rendered machines, or keep `enter` off the server.
 
 ## Diagrams
 
