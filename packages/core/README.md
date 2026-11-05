@@ -124,7 +124,15 @@ expect(inspectMethods(ctrl).idle.start).toHaveBeenCalled();
 
 ## For coding agents
 
-This package ships an [Agent Skill](https://agentskills.io/) at `skills/muxmuxmux/SKILL.md`. It lists the patterns and the common mistakes. Point your agent at `node_modules/@muxmuxmux/core/skills/muxmuxmux/SKILL.md`, or load it with `npx @tanstack/intent install`.
+This package ships an [Agent Skill](https://agentskills.io/) at `skills/muxmuxmux/SKILL.md`. It lists the patterns and the common mistakes. Point your agent at `node_modules/@muxmuxmux/core/skills/muxmuxmux/SKILL.md`, or load it with `npx @tanstack/intent install`. Both give the copy that matches your installed version.
+
+To install the skill without the package, use the [`skills`](https://github.com/vercel-labs/skills) CLI:
+
+```bash
+npx skills add https://github.com/vadirn/muxmuxmux/tree/main/packages/core/skills/muxmuxmux
+```
+
+This copy comes from `main`, so it can describe changes that are not released yet. To match a release, replace `main` with that release's commit.
 
 ## License
 
