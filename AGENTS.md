@@ -9,6 +9,8 @@ Facts a coding agent needs in this repo. [CONTRIBUTING.md](CONTRIBUTING.md) cove
 
 All five are pnpm workspace projects.
 
+[docs/machine-design.md](docs/machine-design.md) records why the machine works as it does, with the evidence behind each decision. Read it before you change the machine's lifecycle.
+
 ## Dev shell
 
 `shell.nix` provides Node 24 and pnpm 11. direnv loads it through `.envrc`, so run `direnv allow` once per checkout. The shell keeps pnpm's store in `~/.cache/pnpm`, which agent sandboxes can write.

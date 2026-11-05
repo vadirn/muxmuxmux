@@ -1,38 +1,8 @@
-# @muxmuxmux/machine: design, iteration 4
+# @muxmuxmux/machine: design
 
-A separate package beside `@muxmuxmux/core`. Iteration 4 folds in the probe of the four open questions. The package lives in [packages/machine](../packages/machine/README.md). A throwaway prototype tested the decisions below, including mutants and rejected API shapes. It was discarded after it answered its questions, and the evidence column records its results. The package's tests now carry the lifecycle evidence.
+Why `@muxmuxmux/machine` works the way it does. The [package README](../packages/machine/README.md) covers the API and its use. This doc keeps the full rules and, for each decision, the evidence that tested it. Its examples use the `upload` machine from the README's quick start.
 
-## API
-
-```ts
-import { hold, machine, once, when } from "@muxmuxmux/machine";
-
-const upload = machine("idle", {
-	idle: { start: (visit) => visit.to("sending") },
-	sending: {
-		enter: async (visit) => {
-			try {
-				await post(file, { signal: visit.signal });
-				visit.to("idle");
-			} catch {
-				visit.to("failed");
-			}
-		},
-		cancel: (visit) => visit.to("idle"),
-	},
-	failed: { retry: (visit) => visit.to("sending") },
-});
-```
-
-| Export                             | What it is |
-| ---------------------------------- | ---------- |
-| `machine(initial, states, graph?)` | Creates a machine: a store of the state name plus one method per name any state declares |
-| `once(m, method, { signal })`      | Resolves with the arguments of the next call to `method`; rejects with the signal's reason |
-| `when(m, state, { signal })`       | Resolves once the machine is in `state`; works on any `{ get, subscribe }` |
-| `hold(child, visit)`               | Keeps `child` running for exactly as long as `visit` lasts |
-| `Visit`, `Graph`, `Machine`        | Types |
-
-The `@muxmuxmux/machine/react` subpath exports `useMachine(initial, states, graph?)`. React is an optional peer dependency of `@muxmuxmux/machine`, so users without React install nothing extra.
+A throwaway prototype produced most of that evidence, including mutants and rejected API shapes, and was then discarded. The package's tests now carry the lifecycle evidence.
 
 ## Core or machine
 
@@ -67,14 +37,6 @@ Use the machine when:
 Quick test: if every handler calls `set` before any `await` and starts no timer, stay on core.
 
 `when` accepts any `{ get, subscribe }`, so a machine can wait on a core controller.
-
-### In the skills
-
-The skills will carry this guide, so an agent picks the right package. The full guide lives in one skill only.
-
-- The machine's skill carries the full guide, pointing back to core for the cases core covers.
-- Core's skill carries only the quick test and points to the machine's skill. It needs that much, because the version-matched ways to load a skill read only installed packages: the `node_modules` path and `npx @tanstack/intent install`. So an agent with only core installed never sees the machine's skill.
-- Add the quick test to core's skill only once the machine is on npm. Before that, the shipped skill would point at a package npm does not have.
 
 ## Rules
 
@@ -215,7 +177,7 @@ export function useMachine(initial, states, graph) {
 | React 18 stays in the peer range                        | On React 18.3.1 with its types, the package's tests and `@muxmuxmux/react`'s pass unchanged, and both typecheck. Without `startOnSubscribe`, React 18 runs `enter` during render and leaves one visit running after unmount |
 | `hold`                                                  | Three cases: nested child, history child, keeping a child alive while waiting on it |
 | `useMachine` in the `./react` subpath                   | Reasoning, not a test: the start-on-subscribe option stays private to one package, and users without React pay nothing. Cost: `@muxmuxmux/react` stops being the only React binding |
-| Full guide in the machine's skill, quick test in core's | Reasoning, not a test: the full guide lives once, and core's skill keeps only what an agent with core alone needs to find the machine |
+| Full guide in the machine's skill, quick test in core's | Reasoning, not a test: the full guide lives once. Core's skill keeps only the quick test and a pointer, because the version-matched skill loaders read installed packages only, so an agent with core alone never sees the machine's skill |
 
 The package's `index.test.ts` catches the same three lifecycle mutants as the prototype. A restart on a stopped call fails 3 tests, start-first fails 2, and a deferred stop fails 4. Making `enter` errors silent fails 2.
 
