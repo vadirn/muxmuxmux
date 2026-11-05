@@ -30,5 +30,5 @@
 		"@changesets/cli": "3.0.3",
 		"typescript": "7.0.2"
 	},
-	"packageManager": "pnpm@10.21.0"
+	"packageManager": "pnpm@11.28.9"
 }
