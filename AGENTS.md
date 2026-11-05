@@ -4,10 +4,12 @@ Facts a coding agent needs in this repo. [CONTRIBUTING.md](CONTRIBUTING.md) cove
 
 ## Layout
 
-- `packages/core`, `packages/react`: the published packages.
+- `packages/core`, `packages/react`, `packages/machine`: the published packages. `packages/machine` publishes two entries, `.` and `./react`.
 - `examples/react-button`, `examples/svelte-button`: private demo apps.
 
-All four are pnpm workspace projects.
+All five are pnpm workspace projects.
+
+[docs/machine-design.md](docs/machine-design.md) records why the machine works as it does, with the evidence behind each decision. Read it before you change the machine's lifecycle.
 
 ## Dev shell
 
@@ -29,10 +31,11 @@ Before you finish, run `pnpm format`, `pnpm lint`, `pnpm typecheck`, and `pnpm t
 
 - `packages/*`: `tsc --noEmit` over `src`, tests included.
 - `packages/core/fixtures/declaration-emit`: exports a controller and emits its declarations. TS4023 there means consumers cannot export controllers.
+- `packages/machine/fixtures/declaration-emit`: exports machines and a `useMachine` hook through both `exports` entries. TS4023 there means consumers cannot export machines, and an unresolved import means the `exports` map broke.
 - `examples/react-button`: `tsc --noEmit`.
 - `examples/svelte-button`: `svelte-kit sync && svelte-check`.
 
-The fixture, the React package, and the examples import workspace packages from `dist`. So `pnpm typecheck` runs `pnpm build` first.
+The fixtures, the React package, and the examples import workspace packages from `dist`. So `pnpm typecheck` runs `pnpm build` first.
 
 ## Type tests
 

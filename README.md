@@ -159,6 +159,7 @@ Arguments must suit every state that defines the method, because the state can c
 
 - **[@muxmuxmux/core](./packages/core)** - Core library (framework-agnostic)
 - **[@muxmuxmux/react](./packages/react)** - React bindings
+- **[@muxmuxmux/machine](./packages/machine)** - State machines whose states own their work, with React bindings at `@muxmuxmux/machine/react`
 
 **Note:** Svelte works with `@muxmuxmux/core` directly via its native store interface.
 
