@@ -1,6 +1,6 @@
 {
 	"name": "@muxmuxmux/machine",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"type": "module",
 	"description": "State machines whose states own their work, and leaving a state aborts it",
 	"keywords": [
