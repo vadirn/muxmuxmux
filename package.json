@@ -22,7 +22,7 @@
 		"clean": "pnpm -r run clean && rm -rf node_modules",
 		"format": "biome format --write .",
 		"lint": "biome lint .",
-		"changeset:version": "changeset version && pnpm -r generate:version && git add --all",
+		"changeset:version": "changeset version && git add --all",
 		"changeset:release": "changeset publish"
 	},
 	"devDependencies": {
