@@ -11,7 +11,7 @@ All four are pnpm workspace projects.
 
 ## Dev shell
 
-`shell.nix` provides Node 24 and pnpm 10. direnv loads it through `.envrc`, so run `direnv allow` once per checkout. The shell keeps pnpm's store in `~/.cache/pnpm`, which agent sandboxes can write.
+`shell.nix` provides Node 24 and pnpm 11. direnv loads it through `.envrc`, so run `direnv allow` once per checkout. The shell keeps pnpm's store in `~/.cache/pnpm`, which agent sandboxes can write.
 
 ## Commands
 
