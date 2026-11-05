@@ -1,6 +1,6 @@
 # @muxmuxmux/machine: design, iteration 4
 
-A separate package beside `@muxmuxmux/core`. Iteration 4 folds in the probe of the four open questions. The package lives in [packages/machine](../packages/machine/README.md). The prototype and its tests live in [machine-prototype/](machine-prototype/README.md), rebuilt from the session transcripts. It stays as the evidence behind the decisions below, including the mutants and the rejected API shapes.
+A separate package beside `@muxmuxmux/core`. Iteration 4 folds in the probe of the four open questions. The package lives in [packages/machine](../packages/machine/README.md). The throwaway prototype behind the decisions below, with its mutants and rejected API shapes, is archived outside the repo. The package's tests now carry the lifecycle evidence.
 
 ## API
 
@@ -31,8 +31,6 @@ const upload = machine("idle", {
 | `when(m, state, { signal })`       | Resolves once the machine is in `state`; works on any `{ get, subscribe }` |
 | `hold(child, visit)`               | Keeps `child` running for exactly as long as `visit` lasts |
 | `Visit`, `Graph`, `Machine`        | Types |
-
-A fuller example, the repo's submit button as a machine, runs in [machine-prototype/example.ts](machine-prototype/example.ts).
 
 The `@muxmuxmux/machine/react` subpath exports `useMachine(initial, states, graph?)`. React is an optional peer dependency of `@muxmuxmux/machine`, so users without React install nothing extra.
 
