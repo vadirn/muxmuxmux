@@ -167,6 +167,7 @@ export function useMachine(initial, states, graph) {
 | ------------------------------------------------------- | -------- |
 | Visit-first methods                                     | Shapes where the visit refers to the methods object collapse targets to `never` |
 | Graph optional                                          | Without a graph, `visit.to("idel")` still fails to compile, and stale results stay safe |
+| Lifecycle: stop on the last unsubscribe                 | `Symbol.dispose` was ruled out. The repo's `ES2024` lib lacks it, so TypeScript 7.0.2 reports TS2550, and Safari lacked it on 2026-11-03. A call made right after `machine(...)` reaches the first flow, where the earlier microtask start lost it. Under StrictMode, the discarded machine never enters. Reasoning: React and Svelte already subscribe and unsubscribe, so neither needs adapter code. Work with no viewer must say so in code, with `m.subscribe(() => {})`. Not tested: an explicit `start()` |
 | Svelte lifecycle                                        | Six call sequences; five mutants each fail one |
 | Svelte server render: a rule, not a server check        | Svelte 5.57.3's server render of a probe page ran the initial `enter`, showed its synchronous move in the HTML, and aborted the visit before the code after its `await` ran |
 | Dead visit after stop                                   | A restart mutant fails the lifecycle and React tests; under restart, an orphaned child moves |
