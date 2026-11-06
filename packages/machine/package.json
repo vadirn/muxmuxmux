@@ -41,7 +41,8 @@
 		}
 	},
 	"files": [
-		"dist"
+		"dist",
+		"skills"
 	],
 	"publishConfig": {
 		"access": "public"

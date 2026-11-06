@@ -148,6 +148,20 @@ Quick test: if every handler calls `set` before any `await` and starts no timer,
 | `Visit<G, S>`                         | type     | One stay in state `S` |
 | `Graph<K>`                            | type     | State name → the states it may move to |
 
+## For coding agents
+
+This package ships an [Agent Skill](https://agentskills.io/) at `skills/muxmuxmux-machine/SKILL.md`. It holds the full core-or-machine guide, the patterns and the common mistakes.
+
+To load the copy that matches your installed version, point your agent at `node_modules/@muxmuxmux/machine/skills/muxmuxmux-machine/SKILL.md`. Or run `npx skills experimental_sync` from the [`skills`](https://github.com/vercel-labs/skills) CLI. It links the skills your dependencies ship into `.agents/skills/`.
+
+To install the skill without the package, use the same CLI:
+
+```bash
+npx skills add https://github.com/vadirn/muxmuxmux/tree/main/packages/machine/skills/muxmuxmux-machine
+```
+
+This copy comes from `main`, so it can describe changes that are not released yet. To match a release, replace `main` with that release's commit.
+
 ## License
 
 MIT
