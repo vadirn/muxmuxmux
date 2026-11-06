@@ -301,7 +301,6 @@ it("lets a cancel win over a late failure", async () => {
 
 - Wait a macrotask before you assert on a move that follows an `await` in `enter`.
 - Call `m.subscribe(() => {})` first when `enter` must run before any method call.
-- Use fake timers, such as `vi.useFakeTimers()`, for timers started in `enter`.
 
 ## Common mistakes
 
@@ -311,7 +310,7 @@ it("lets a cancel win over a late failure", async () => {
 
 ❌ Don't start a request or a timer without `visit.signal`. A late result moves nothing, but the work still runs.
 
-❌ Don't let an async `enter` throw anything but its visit's abort reason. Any other error surfaces as an uncaught error. Catch it, and move to an error state.
+❌ Don't let an async `enter` throw anything but its visit's abort reason. Any other error surfaces as an uncaught error, so catch it inside `enter`.
 
 ❌ Don't expect a move to the current state to do nothing, as in core. It re-enters: the old visit aborts, and `enter` runs again.
 
