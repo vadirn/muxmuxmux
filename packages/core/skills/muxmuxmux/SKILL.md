@@ -18,6 +18,12 @@ description: >
 
 In React, use `useController` from `@muxmuxmux/react`. In Svelte, use the controller directly as a store.
 
+## Core or machine
+
+Quick test: if every handler calls `set` before any `await` and starts no timer, stay on core.
+
+A handler may still await and then call `set` on core. That is safe when no other call can leave the state meanwhile, as in the example below. Otherwise, use `@muxmuxmux/machine`. Leaving one of its states aborts that state's work, so a cancel wins over a late result. Its skill holds the full guide to choosing: install the package, then read `node_modules/@muxmuxmux/machine/skills/muxmuxmux-machine/SKILL.md`.
+
 ## Define states and transitions
 
 Write each state's methods. A method changes state by calling `set` on the controller's variable.
@@ -27,7 +33,7 @@ import { controller } from "@muxmuxmux/core";
 
 const upload = controller("idle", {
 	idle: { start: (file: File) => send(file) },
-	uploading: { cancel: () => upload.set("idle") },
+	uploading: {},
 	failed: { start: (file: File) => send(file), dismiss: () => upload.set("idle") },
 });
 
@@ -42,7 +48,7 @@ async function send(file: File) {
 }
 ```
 
-Leave a state's object empty when nothing should happen in it, for example `loading: {}`.
+Leave a state's object empty when nothing should happen in it, as `uploading` does.
 
 ## Read the state
 
