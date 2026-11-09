@@ -1,5 +1,13 @@
 # @muxmuxmux/react
 
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies [59eed69]
+- Updated dependencies [e79c77c]
+  - @muxmuxmux/core@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes

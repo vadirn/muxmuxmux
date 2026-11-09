@@ -1,5 +1,12 @@
 # @muxmuxmux/core
 
+## 0.2.1
+
+### Patch Changes
+
+- 59eed69: The skill's frontmatter now holds only `name` and `description`, so Agent Skills validators accept it. The README lists each way to load the skill, including the new Claude Code plugin.
+- e79c77c: The skill now gives the quick test for choosing between core and `@muxmuxmux/machine`, and points to the machine's skill for the full guide. Its upload example no longer has a cancel that a late result could undo.
+
 ## 0.2.0
 
 ### Minor Changes

@@ -1,5 +1,12 @@
 # @muxmuxmux/machine
 
+## 0.1.1
+
+### Patch Changes
+
+- 0a91a99: The package now ships an agent skill at `skills/muxmuxmux-machine/SKILL.md`, so coding agents can learn the API from `node_modules`. The skill holds the full guide to choosing between `@muxmuxmux/core` and the machine.
+- 59eed69: The package now carries the `tanstack-intent` keyword, so the TanStack Intent registry lists its skill. The README lists each way to load the skill, including the new Claude Code plugin.
+
 ## 0.1.0
 
 ### Minor Changes
