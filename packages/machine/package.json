@@ -10,7 +10,8 @@
 		"state-machine",
 		"framework-agnostic",
 		"react",
-		"svelte"
+		"svelte",
+		"tanstack-intent"
 	],
 	"author": "Vadim Kotov",
 	"license": "MIT",
