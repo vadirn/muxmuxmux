@@ -152,15 +152,18 @@ Quick test: if every handler calls `set` before any `await` and starts no timer,
 
 This package ships an [Agent Skill](https://agentskills.io/) at `skills/muxmuxmux-machine/SKILL.md`. It holds the full core-or-machine guide, the patterns and the common mistakes.
 
-To load the copy that matches your installed version, point your agent at `node_modules/@muxmuxmux/machine/skills/muxmuxmux-machine/SKILL.md`. Or run `npx skills experimental_sync` from the [`skills`](https://github.com/vercel-labs/skills) CLI. It links the skills your dependencies ship into `.agents/skills/`.
+These options load the copy that matches your installed version:
 
-To install the skill without the package, use the same CLI:
+- Point your agent at `node_modules/@muxmuxmux/machine/skills/muxmuxmux-machine/SKILL.md`.
+- Run `npx skills experimental_sync` from the [`skills`](https://github.com/vercel-labs/skills) CLI. It links the skills your dependencies ship into `.agents/skills/`.
+- Run `npx @tanstack/intent install`. It adds a block to your agent's instructions file that points at the skill.
 
-```bash
-npx skills add https://github.com/vadirn/muxmuxmux/tree/main/packages/machine/skills/muxmuxmux-machine
-```
+These options install the skill without the package:
 
-This copy comes from `main`, so it can describe changes that are not released yet. To match a release, replace `main` with that release's commit.
+- Run `npx skills add vadirn/muxmuxmux --skill muxmuxmux-machine`.
+- In Claude Code, run `/plugin marketplace add vadirn/muxmuxmux`, then `/plugin install muxmuxmux-machine@muxmuxmux`.
+
+Both copy the skill from `main`, so it can describe changes that are not released yet.
 
 ## License
 

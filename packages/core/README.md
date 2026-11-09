@@ -124,15 +124,20 @@ expect(inspectMethods(ctrl).idle.start).toHaveBeenCalled();
 
 ## For coding agents
 
-This package ships an [Agent Skill](https://agentskills.io/) at `skills/muxmuxmux/SKILL.md`. It lists the patterns and the common mistakes. Point your agent at `node_modules/@muxmuxmux/core/skills/muxmuxmux/SKILL.md`, or load it with `npx @tanstack/intent install`. Both give the copy that matches your installed version.
+This package ships an [Agent Skill](https://agentskills.io/) at `skills/muxmuxmux/SKILL.md`. It lists the patterns and the common mistakes.
 
-To install the skill without the package, use the [`skills`](https://github.com/vercel-labs/skills) CLI:
+These options load the copy that matches your installed version:
 
-```bash
-npx skills add https://github.com/vadirn/muxmuxmux/tree/main/packages/core/skills/muxmuxmux
-```
+- Point your agent at `node_modules/@muxmuxmux/core/skills/muxmuxmux/SKILL.md`.
+- Run `npx skills experimental_sync` from the [`skills`](https://github.com/vercel-labs/skills) CLI. It links the skills your dependencies ship into `.agents/skills/`.
+- Run `npx @tanstack/intent install`. It adds a block to your agent's instructions file that points at the skill.
 
-This copy comes from `main`, so it can describe changes that are not released yet. To match a release, replace `main` with that release's commit.
+These options install the skill without the package:
+
+- Run `npx skills add vadirn/muxmuxmux --skill muxmuxmux`.
+- In Claude Code, run `/plugin marketplace add vadirn/muxmuxmux`, then `/plugin install muxmuxmux@muxmuxmux`.
+
+Both copy the skill from `main`, so it can describe changes that are not released yet.
 
 ## License
 

@@ -7,12 +7,6 @@ description: >
   current state's version, or does nothing and returns undefined. Use when
   writing, reviewing or testing code that imports @muxmuxmux/core or
   @muxmuxmux/react, or when modelling UI states such as idle, loading and error.
-metadata:
-  type: core
-  library: muxmuxmux
-sources:
-  - "vadirn/muxmuxmux:packages/core/src/index.ts"
-  - "vadirn/muxmuxmux:packages/core/README.md"
 ---
 
 # muxmuxmux

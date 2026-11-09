@@ -1,0 +1,21 @@
+{
+	"name": "muxmuxmux",
+	"owner": {
+		"name": "Vadim Kotov"
+	},
+	"metadata": {
+		"description": "Agent skills for the muxmuxmux packages"
+	},
+	"plugins": [
+		{
+			"name": "muxmuxmux",
+			"source": "packages/core",
+			"description": "Agent skill for @muxmuxmux/core: state-dependent methods on an observable store"
+		},
+		{
+			"name": "muxmuxmux-machine",
+			"source": "packages/machine",
+			"description": "Agent skill for @muxmuxmux/machine: state machines whose states own their work"
+		}
+	]
+}
