@@ -89,6 +89,7 @@ The machine works in Svelte with no adapter, like a core controller. On Svelte 5
 - Inside a state: `const [name] = await once(m, "setName", visit)`. Leaving the state rejects the wait, and `enter` ends quietly.
 - For a caller: a method returns a wait, as in `ask: (visit): Promise<[ok: boolean]> => once(confirm, "answer", visit.to("open"))`. The return annotation breaks a type cycle.
 - For a state: `await when(upload, "idle")`.
+- `once` needs a machine. Given anything else, such as a core controller, it throws `TypeError("once needs a machine")` before it returns a promise. `when` accepts any `{ get, subscribe }`.
 - Waiters resolve before the method body runs, so a method that leaves the state still resolves its waiter.
 - A call that arrives before a flow waits for it is lost. Nothing is buffered.
 
